@@ -20,7 +20,7 @@ comptime THREADS_PER_BLOCK = SIZE
 comptime dtype = DType.float32
 comptime vector_layout = row_major[SIZE]()
 comptime VectorLayout = type_of(vector_layout)
-comptime ITER = 2
+comptime ITER = 3
 
 
 # ANCHOR: first_crash
@@ -80,7 +80,7 @@ def collaborative_filter(
         # Apply collaborative filter with neighbors
         if thread_id > 0:
             shared_workspace[thread_id] += shared_workspace[thread_id - 1] * 0.5
-        barrier()
+    barrier()
 
     # Phase 3: Final synchronization and output
     barrier()
@@ -111,7 +111,8 @@ def main() raises:
         print()
 
         with DeviceContext() as ctx:
-            input_buf = ctx.enqueue_create_buffer[dtype](0)
+            var input_buf = ctx.enqueue_create_buffer[dtype](SIZE)
+            input_buf.enqueue_fill(0)
             var result_buf = ctx.enqueue_create_buffer[dtype](SIZE)
             result_buf.enqueue_fill(0)
 

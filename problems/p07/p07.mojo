@@ -25,9 +25,11 @@ def add_10_blocks_2d(
     a: TileTensor[mut=False, dtype, ALayout, ImmutAnyOrigin],
     size: Int,
 ):
-    var row = block_dim.y * block_idx.y + thread_idx.y
-    var col = block_dim.x * block_idx.x + thread_idx.x
+    var row = block_idx.y * block_dim.y + thread_idx.y
+    var col = block_idx.x * block_dim.x + thread_idx.x
     # FILL ME IN (roughly 2 lines)
+    if row < size and col < size:
+        output[row, col] = a[row, col] + 10.0
 
 
 # ANCHOR_END: add_10_blocks_2d
